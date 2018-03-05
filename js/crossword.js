@@ -7,13 +7,36 @@ var $playArea = $("#play-area"),
     $rowCountSelection =  $("#row-count-selection"),
     $colCountSelection =  $("#col-count-selection"),
     $inputList = $("#input-list"),
+    $optionsContainer = $("#options-container"),
+    $optionsLauncher = $("#options-launcher"),
+    $soundOnButton = $("#soundOnButton"),
     rows = 10,
     columns = 10,
     boxes = [],
     words = [],
     selectedIds = [],
     selectionType = "",
-    foundWordCount = 0;
+    foundWordCount = 0,
+    soundOn = true,
+    sound1 = new Audio("./audio/sound1.wav"),
+    sound2 = new Audio("./audio/sound2.wav"),
+    winSound = new Audio("./audio/win.wav");
+
+
+var $starContainer = $("<div class='stars-container'>" + 
+  "<img class='star star-small star-popup ' src='images/star.png'>" + 
+  "<img class='star star-popup' src='images/star.png'>" +
+  "<img class='star star-small star-popup' src='images/star.png'></div>")
+
+function playPointSound() {
+  if (soundOn) {
+    if(Math.round > 0.50) {
+      sound1.play();
+    } else {
+      sound2.play();
+    }
+  }
+}
 
 // set options
 $(document).on("click", "#start-new-game-button", function(e) {
@@ -24,6 +47,15 @@ $(document).on("click", "#start-new-game-button", function(e) {
   columns = $colCountSelection.val()
 });
 
+
+$(document).on("click", "#options-launcher", function(e) {
+  console.log("open options")
+  $optionsContainer.fadeIn();
+})
+
+$(document).on("change", "#soundOnButton", function() {
+  soundOn = !soundOn;
+})
 
 function addWordToList(wordAndClueArray) {
   words.push(wordAndClueArray)
@@ -218,11 +250,17 @@ $(document).on("click", ".square", function(e) {
   }
   if (checkAttempt()) {
     crossOutWordAndClue(highLightedLetters().join(""))
+    playPointSound();
+    $(".selected-square").last().append($starContainer)
+    setTimeout(function() {
+      $(".stars-container").fadeOut(1000).remove();
+    }, 800)
 
     $(".selected-square").each(function(el) {
       $(this).addClass("found-word");
       $(this).removeClass("selected-square");
     })
+
 
     selectedIds = [];
     selectionType = "";
@@ -230,7 +268,8 @@ $(document).on("click", ".square", function(e) {
     if (foundWordCount === words.length) {
 
       console.log("You win")
-      $winMessageContainer.fadeIn();
+      if (soundOn) { winSound.play(); }
+      // $winMessageContainer.fadeIn();
     }
 
 
