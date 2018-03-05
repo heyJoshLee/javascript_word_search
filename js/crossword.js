@@ -1,13 +1,15 @@
 var $playArea = $("#play-area"),
     $wordList = $("#word-list"), 
     $clueArea = $("#clue-area"),
+    $playAgainButton = $("#play-again-button"),
+    $winMessageContainer = $("#win-message-container"),
     rows = 10,
     columns = 10,
     boxes = [],
-    selectedIds = [];
-
-var words = [];
-
+    words = [],
+    selectedIds = [],
+    selectionType = "",
+    foundWordCount = 0;
 
 
 function addWordToList(wordAndClueArray) {
@@ -17,10 +19,10 @@ function addWordToList(wordAndClueArray) {
 }
 
 addWordToList(["happy", "a good feeling"])
-addWordToList(["sad", "a bad feeling"])
-addWordToList(["dog", "animals that bark"])
-addWordToList(["cats", "animals that meow"])
-addWordToList(["coat", "clothing worn when cold"])
+// addWordToList(["sad", "a bad feeling"])
+// addWordToList(["dog", "animals that bark"])
+// addWordToList(["cats", "animals that meow"])
+// addWordToList(["coat", "clothing worn when cold"])
 
 
 // build puzzle functions
@@ -185,17 +187,41 @@ $(document).on("click", ".square", function(e) {
     // Player selects new square
     $(".square").removeClass("selected-square")
     $this.toggleClass("selected-square");
-    selectedIds = [idToAdd]
+    selectedIds = [idToAdd];
+    selectionType = "";
+    console.log("hitting here")
+
   } else if (idToAdd === selectedIds[selectedIds.length - 1]) {
     console.log("selected last square")
     $this.toggleClass("selected-square");
     selectedIds.pop();
+    selectionType = "";
+  } else if (selectedIds.includes(idToAdd)) {
+    console.log("already selected");
   } else if (squaresAreTouching(selectedIds, idToAdd)) {
     $this.toggleClass("selected-square");
     selectedIds.push(idToAdd)
+  
   }
-  console.log("selectedIds")
-  console.log(selectedIds)
+  if (checkAttempt()) {
+    crossOutWordAndClue(highLightedLetters().join(""))
+
+    $(".selected-square").each(function(el) {
+      $(this).addClass("found-word");
+      $(this).removeClass("selected-square");
+    })
+
+    selectedIds = [];
+    selectionType = "";
+    foundWordCount++
+    if (foundWordCount === words.length) {
+
+      console.log("You win")
+      $winMessageContainer.fadeIn();
+    }
+
+
+  }
 })
 
 function squaresAreTouching(selectedIds, square2Id) {
@@ -207,37 +233,113 @@ function squaresAreTouching(selectedIds, square2Id) {
       row2 = parseInt(square2Id.split("_")[0]),
       col2 = parseInt(square2Id.split("_")[1]);
 
-  // console.log("last square")
-  // console.log(selectedIds[selectedIds.length - 1])
-  // console.log("square to check")
-  // console.log(square2Id)
-
-  // console.log("row1: " + row1)
-  // console.log("col1: " + col1)
-  // console.log("row2: " + row2)
-  // console.log("col2: " + col2)
-
   if (row1 === row2 && col1 === col2 ) {
     // same square
     console.log("Its the same square")
     touching = true;
   } else if (row1 === row2 && (col1 - 1 === col2 || col1 + 1 === col2)) {
+    // Horizontal selection
     console.log("on the same row")
-    touching = true;
+    if (selectedIds.length === 1) {
+      // set the type of match direction type for a new attempt
+      selectionType = "hor";
+      touching = true;
+    } else if (selectedIds.length > 1 && selectionType === "hor") {
+      // let user connect another square horizontally
+      selectionType = "hor";
+      touching = true;      
+    } else {
+      // don't let user change match direction
+      touching = false;
+    }
+
   } else if (col1 === col2 && (row1 - 1 === row2 || row1 + 1 === row2)) {
+    // Vertical selection
     console.log("on the same column")
-    touching = true;    
+    if (selectedIds.length === 1) {
+      // set the type of match direction type for a new attempt
+      selectionType = "vert";
+      touching = true;
+    } else if (selectedIds.length > 1 && selectionType === "vert") {
+      // let user connect another square verticially
+      selectionType = "vert";
+      touching = true;      
+    } else {
+      // don't let user change match direction
+      touching = false;
+    }
+
+
   } else if (row1 === row2 + 1 && col1 === col2 + 1 || row1 === row2 - 1 && col1 === col2 - 1 ||
              col1 === col2 + 1 && row1 === row2 - 1 || col1 === col2 - 1 && row1 === row2 + 1 ) {
+
+    // Diagonal selection
     console.log("on the same diagonal")
-    touching = true;
+
+    if (selectedIds.length === 1) {
+      // set the type of match direction type for a new attempt
+      selectionType = "diag";
+      touching = true;
+    } else if (selectedIds.length > 1 && selectionType === "diag") {
+      // let user connect another square diagonally
+      selectionType = "diag";
+      touching = true;      
+    } else {
+      // don't let user change match direction
+      touching = false;
+    }
+
+
   }
 
+  console.log(selectionType)
   return touching;
 
 }
 
 
-buildSquares(); 
-fillPuzzleWithWords(words)
-fillBlankSquares()
+function highLightedLetters() {
+  var selectedLetters = [];
+  for(var i = 0; i - selectedIds.length; i ++ ) {
+    selectedLetters.push(squareContents(selectedIds[i]))
+  }
+  return selectedLetters;
+}
+
+function checkAttempt() {
+  var word = highLightedLetters().join(""),
+      wordsArray = words.map(function(el) {
+        return el[0]
+      });
+  
+  var selectedValidWord = wordsArray.includes(word);
+
+  var selectedValidSquares = selectedIds.every(function(id) {
+    return $("#" + id).hasClass("contains-word")
+  })
+
+  return selectedValidSquares && selectedValidWord;
+}
+
+function crossOutWordAndClue(word) {
+  $("#" + word + "-list").addClass("answered");
+  $("#" + word + "-clue").addClass("answered");
+}
+
+
+$(document).on("click", "#play-again-button", function() {
+  startGame();
+});
+
+function startGame() {
+  selectedIds = [];
+  selectionType = "";
+  foundWordCount = 0;
+  buildSquares(); 
+  fillPuzzleWithWords(words)
+  fillBlankSquares();
+  $winMessageContainer.fadeOut();
+}
+
+startGame();
+

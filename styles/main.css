@@ -52,3 +52,38 @@ li {
 .selected-square {
   background-color: #61EFD2;
 }
+
+.answered {
+  text-decoration: line-through red;
+  color: gray;
+}
+
+.found-word {
+  background-color: lightgray;
+}
+
+#win-message-container {
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding-top: 30px;
+  background-color: #61EFD2 ;
+  z-index: 10;
+  position: absolute;
+  color: snow;
+  text-align: center;
+}
+
+#play-again-button {
+  border: 1px solid snow;
+  border-radius: 3px;
+  display: block;
+  width: 100px;
+  margin: 0 auto;
+  padding: 10px;
+}
+
+#play-again-button:hover {
+  cursor: pointer;
+}
