@@ -1,3 +1,7 @@
+body {
+  font-family: Arial;
+}
+
 .square {
   border: 1px solid black;
   box-sizing: border-box;
@@ -10,8 +14,41 @@
   padding-top: 2px;
   font-weight: bold;
   font-family: Arial;
+  -moz-user-select: -moz-none;
+ -khtml-user-select: none;
+ -webkit-user-select: none;
+ -ms-user-select: none;
+ user-select: none;
+}
+
+.square:hover {
+  cursor: pointer;
 }
 
 .contains-word {
   color: red;
+}
+
+#play-area {
+  width: 400px;
+  display: inline-block;
+  float: left;
+}
+
+#word-list {
+  font-size: 24px;
+}
+
+li {
+  list-style-type: none;
+}
+
+#clue-area-container::after {
+  content: "";
+  display: block;
+  clear: both;
+}
+
+.selected-square {
+  background-color: #61EFD2;
 }

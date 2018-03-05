@@ -3,7 +3,8 @@ var $playArea = $("#play-area"),
     $clueArea = $("#clue-area"),
     rows = 10,
     columns = 10,
-    boxes = [];
+    boxes = [],
+    selectedIds = [];
 
 var words = [];
 
@@ -168,6 +169,73 @@ function fillPuzzleWithWords(wordsArray) {
     insertWordIntoGrid(wordsArray[i][0]);
   }
 } 
+
+
+
+// ******************************
+/// Playing functions
+// ******************************
+
+$(document).on("click", ".square", function(e) {
+  var $this = $(this),
+      idToAdd = $this.attr("id");
+
+  if (selectedIds.length === 0 || 
+      selectedIds.length === 1 && !squaresAreTouching(selectedIds, idToAdd) ) {
+    // Player selects new square
+    $(".square").removeClass("selected-square")
+    $this.toggleClass("selected-square");
+    selectedIds = [idToAdd]
+  } else if (idToAdd === selectedIds[selectedIds.length - 1]) {
+    console.log("selected last square")
+    $this.toggleClass("selected-square");
+    selectedIds.pop();
+  } else if (squaresAreTouching(selectedIds, idToAdd)) {
+    $this.toggleClass("selected-square");
+    selectedIds.push(idToAdd)
+  }
+  console.log("selectedIds")
+  console.log(selectedIds)
+})
+
+function squaresAreTouching(selectedIds, square2Id) {
+  // are the squares touching
+  var touching = false;
+  var firstId = selectedIds[selectedIds.length - 1],
+      row1 = parseInt(firstId.split("_")[0]),
+      col1 = parseInt(firstId.split("_")[1]),
+      row2 = parseInt(square2Id.split("_")[0]),
+      col2 = parseInt(square2Id.split("_")[1]);
+
+  // console.log("last square")
+  // console.log(selectedIds[selectedIds.length - 1])
+  // console.log("square to check")
+  // console.log(square2Id)
+
+  // console.log("row1: " + row1)
+  // console.log("col1: " + col1)
+  // console.log("row2: " + row2)
+  // console.log("col2: " + col2)
+
+  if (row1 === row2 && col1 === col2 ) {
+    // same square
+    console.log("Its the same square")
+    touching = true;
+  } else if (row1 === row2 && (col1 - 1 === col2 || col1 + 1 === col2)) {
+    console.log("on the same row")
+    touching = true;
+  } else if (col1 === col2 && (row1 - 1 === row2 || row1 + 1 === row2)) {
+    console.log("on the same column")
+    touching = true;    
+  } else if (row1 === row2 + 1 && col1 === col2 + 1 || row1 === row2 - 1 && col1 === col2 - 1 ||
+             col1 === col2 + 1 && row1 === row2 - 1 || col1 === col2 - 1 && row1 === row2 + 1 ) {
+    console.log("on the same diagonal")
+    touching = true;
+  }
+
+  return touching;
+
+}
 
 
 buildSquares(); 
