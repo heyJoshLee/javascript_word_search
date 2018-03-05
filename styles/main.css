@@ -1,0 +1,17 @@
+.square {
+  border: 1px solid black;
+  box-sizing: border-box;
+  width: 30px;
+  height: 30px;
+  display: inline-block;
+  text-align: center;
+  vertical-align: middle;
+  font-size: 18px;
+  padding-top: 2px;
+  font-weight: bold;
+  font-family: Arial;
+}
+
+.contains-word {
+  color: red;
+}
