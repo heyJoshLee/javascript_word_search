@@ -5,7 +5,6 @@
 </head>
 <body>
 
-<h1>Section</h1>
 
 <div id="play-area"></div>
 
@@ -16,6 +15,49 @@
 <div id="clue-area-container">
   <ul id="clue-area"></ul>  
 </div>
+
+
+
+<div id="options-container">
+  <h1>Word Search</h1>
+  <h2>Word List</h2>
+  <div id="word-input-list-container">
+    <textarea name="input-list" id="input-list" cols="60" rows="10">
+sad, a bad feeling
+dog, animals that bark
+cats, animals that meow
+coat, clothing worn when cold</textarea>
+  </div>
+  
+  <div id="select-boxes-container">
+    <div class="selection-container">
+      <h4>Rows</h4>
+      <select name="row" id="row-count-selection">
+        <option value="10">10</option>
+        <option value="20">20</option>
+        <option value="30">30</option>
+        <option value="40">40</option>
+        <option value="50">50</option>
+      </select>      
+    </div>
+
+    <div class="selection-container">
+      <h4>Columns</h4>
+      <select name="row" id="col-count-selection">
+        <option value="10">10</option>
+        <option value="20">20</option>
+        <option value="30">30</option>
+        <option value="40">40</option>
+        <option value="50">50</option>
+      </select>      
+    </div>
+  </div>
+
+  <div id="start-new-game-button">
+    Start Game
+  </div>
+
+</div> <!-- #options-container -->
 
 
 <div id="win-message-container">

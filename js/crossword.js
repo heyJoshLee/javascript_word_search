@@ -3,6 +3,10 @@ var $playArea = $("#play-area"),
     $clueArea = $("#clue-area"),
     $playAgainButton = $("#play-again-button"),
     $winMessageContainer = $("#win-message-container"),
+    $startNewGameButton = $("#start-new-game-button"),
+    $rowCountSelection =  $("#row-count-selection"),
+    $colCountSelection =  $("#col-count-selection"),
+    $inputList = $("#input-list"),
     rows = 10,
     columns = 10,
     boxes = [],
@@ -10,6 +14,15 @@ var $playArea = $("#play-area"),
     selectedIds = [],
     selectionType = "",
     foundWordCount = 0;
+
+// set options
+$(document).on("click", "#start-new-game-button", function(e) {
+  words = $inputList.val().split("\n").map(function(el) {
+    return el.split(", ")
+  })
+  rows = $rowCountSelection.val()
+  columns = $colCountSelection.val()
+});
 
 
 function addWordToList(wordAndClueArray) {

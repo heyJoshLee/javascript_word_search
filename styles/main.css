@@ -62,28 +62,84 @@ li {
   background-color: lightgray;
 }
 
-#win-message-container {
+#win-message-container,
+#options-container {
   top: 0;
   bottom: 0;
   left: 0;
   right: 0;
   padding-top: 30px;
-  background-color: #61EFD2 ;
   z-index: 10;
   position: absolute;
   color: snow;
   text-align: center;
+  /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#61efd2+1,59a8e5+100 */
+  background: #61efd2; /* Old browsers */
+  background: -moz-linear-gradient(-45deg, #61efd2 1%, #59a8e5 100%); /* FF3.6-15 */
+  background: -webkit-linear-gradient(-45deg, #61efd2 1%,#59a8e5 100%); /* Chrome10-25,Safari5.1-6 */
+  background: linear-gradient(135deg, #61efd2 1%,#59a8e5 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#61efd2', endColorstr='#59a8e5',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
 }
 
-#play-again-button {
-  border: 1px solid snow;
+#play-again-button,
+#start-new-game-button {
+  border: 3px solid snow;
   border-radius: 3px;
   display: block;
   width: 100px;
   margin: 0 auto;
   padding: 10px;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+#start-new-game-button:hover {
+  background-color: rgba(97, 219, 210, 1)
+}
+
+#start-new-game-button {
+  margin-top: 30px;
+}
+
+#start-new-game-button:hover {
+  cursor: pointer; ;
 }
 
 #play-again-button:hover {
   cursor: pointer;
+}
+
+select {
+  padding: 1px 5px;
+  border-radius: 4px;
+  font-size: 18px;
+}
+
+.selection-container {
+  display: inline-block;
+  width: 50%;
+
+}
+
+.selection-container {
+  float: left;
+  margin: 0 auto;
+}
+
+#select-boxes-container {
+  text-align: center;
+  width: 30%;
+  margin: 0 auto;
+}
+
+#select-boxes-container::after {
+  content: "";
+  display: block;
+  clear: both;
+}
+
+#input-list {
+  border-radius: 8px;
+  font-size: 18px; 
+  padding: 10px; 
 }
