@@ -8,18 +8,26 @@
 
 <div id="play-area"></div>
 
-<div id="word-list-container">
-  <ul id="word-list"> </ul>
-</div>
+<div id="list-and-clue-container">
 
-<div id="clue-area-container">
-  <ul id="clue-area"></ul>  
+  <div id="word-list-container">
+    <ul id="word-list"> </ul>
+  </div>
+
+  <div id="clue-area-container">
+    <ul id="clue-area"></ul>  
+  </div>
+  
 </div>
 
 
 
 
 <div id="options-container">
+  <div id="close-options-panel-button">
+    Close
+  </div>
+
   <h1>Word Search</h1>
   <h2>Word List</h2>
   <div id="word-input-list-container">
@@ -58,13 +66,22 @@ coat, clothing worn when cold</textarea>
     <input type="checkbox" name="soundOn" id="soundOnButton" checked>
   </label>
 
+  <label for="borderless-button" id="borderless-label">Borderless
+    <input type="checkbox" name="borderless" id="borderless-button" checked>
+  </label>
+
+  <label for="show-answers-button" id="show-answers-label">Show Answers
+    <input type="checkbox" name="show-answers" id="show-answers-button">
+  </label>
+
   <div id="start-new-game-button">
     Start Game
   </div>
 
+
 </div> <!-- #options-container -->
 
-<div id="options-launcher">
+<div id="options-launcher" class="no-print">
   Options
 </div>
 

@@ -7,9 +7,11 @@ var $playArea = $("#play-area"),
     $rowCountSelection =  $("#row-count-selection"),
     $colCountSelection =  $("#col-count-selection"),
     $inputList = $("#input-list"),
+    $borderlesBbutton = $("#borderless-button"),
     $optionsContainer = $("#options-container"),
     $optionsLauncher = $("#options-launcher"),
     $soundOnButton = $("#soundOnButton"),
+    $closeOptionsPanelButton = $("#close-options-panel-button"),
     rows = 10,
     columns = 10,
     boxes = [],
@@ -18,6 +20,9 @@ var $playArea = $("#play-area"),
     selectionType = "",
     foundWordCount = 0,
     soundOn = true,
+    borderless = true,
+    showAnswers = false,
+    gameHasStarted = false,
     sound1 = new Audio("./audio/sound1.wav"),
     sound2 = new Audio("./audio/sound2.wav"),
     winSound = new Audio("./audio/win.wav");
@@ -40,34 +45,64 @@ function playPointSound() {
 
 // set options
 $(document).on("click", "#start-new-game-button", function(e) {
-  words = $inputList.val().split("\n").map(function(el) {
+  words = [];
+  var wordsToAdd = $inputList.val().split("\n").map(function(el) {
     return el.split(", ")
   })
-  rows = $rowCountSelection.val()
-  columns = $colCountSelection.val()
+
+  for(var i = 0; i < wordsToAdd.length;  i++) {
+    addWordToList([wordsToAdd[i][0], wordsToAdd[i][1]]);
+  }
+  rows = $rowCountSelection.val();
+  columns = $colCountSelection.val();
+  $optionsContainer.fadeOut();
+  $closeOptionsPanelButton.show();
+  startGame();
 });
 
 
 $(document).on("click", "#options-launcher", function(e) {
-  console.log("open options")
   $optionsContainer.fadeIn();
 })
+
+$(document).on("click", "#close-options-panel-button", function(e) {
+  $optionsContainer.fadeOut();
+});
 
 $(document).on("change", "#soundOnButton", function() {
   soundOn = !soundOn;
 })
 
+$(document).on("change", "#borderless-button", function() {
+  borderless = !borderless;
+})
+
+$(document).on("change", "#show-answers-button", function() {
+  showAnswers = !showAnswers;
+  if (gameHasStarted && showAnswers) {
+    $(".contains-word").addClass("show-answer")
+  } else if (gameHasStarted && !showAnswers) {
+    $(".contains-word").removeClass("show-answer")    
+  }
+})
+
 function addWordToList(wordAndClueArray) {
   words.push(wordAndClueArray)
-  $wordList.append("<li id='" + wordAndClueArray[0] + "-list'>" + wordAndClueArray[0]  +"</li>")
-  $clueArea.append("<li id='" + wordAndClueArray[0] + "-clue'>" + wordAndClueArray[1]  +"</li>")
 }
 
-addWordToList(["happy", "a good feeling"])
-// addWordToList(["sad", "a bad feeling"])
-// addWordToList(["dog", "animals that bark"])
-// addWordToList(["cats", "animals that meow"])
-// addWordToList(["coat", "clothing worn when cold"])
+function buildWordAndClueHtml(wordAndClueArray) {
+  $wordList.append("<li id='" + wordAndClueArray[0] + "-list'>" + wordAndClueArray[0]  +"</li>")
+  $clueArea.append("<li id='" + wordAndClueArray[0] + "-clue'>" + wordAndClueArray[1]  +"</li>")  
+}
+
+function clearWordAndClueHtml() {
+  $wordList.html("");
+  $clueArea.html("");
+}
+
+function clearPlayArea() {
+  $playArea.html("");
+}
 
 
 // build puzzle functions
@@ -77,6 +112,9 @@ function buildSquares() {
     $("<br/>").appendTo($playArea);
     for (var i = 0; i <= rows; i++) {
       var box = $("<div class='square'></div>");
+      if (borderless) {
+        box.addClass("borderless")
+      }
       box.attr("id", j + "_" + i);
       box.appendTo($playArea);
       boxes.push({x:j, y:i, content: ""});
@@ -85,10 +123,14 @@ function buildSquares() {
 }
 
 
-function insertWordIntoGrid(word) {
+function insertWordIntoGrid(wordAndClueArray) {
   var attempsToPlaceWord = 0,
       attemptLimit = 3,
-      wordHasBeenPlaced = false; 
+      wordHasBeenPlaced = false,
+      word = wordAndClueArray[0]; 
+
+      console.log("adding")
+      console.log(wordAndClueArray)
 
   while(attempsToPlaceWord <= attemptLimit) {
     // tries to place the word if there is space on the board
@@ -158,6 +200,7 @@ function insertWordIntoGrid(word) {
     
     if (canFillAllSquares) {
       placeWord(letters, spacesToFill)
+      buildWordAndClueHtml(wordAndClueArray)
       break; // break from while loop
 
     } else {
@@ -175,7 +218,11 @@ function insertWordIntoGrid(word) {
 function placeWord(letters, spacesToFill) {
   // place word in squares and add class
   for(var i = 0; i < letters.length; i++) {
-    fillSquare(spacesToFill[i], letters[i]).addClass("contains-word")
+    if (showAnswers) {
+      fillSquare(spacesToFill[i], letters[i]).addClass("contains-word").addClass("show-answer")
+    } else {
+      fillSquare(spacesToFill[i], letters[i]).addClass("contains-word")      
+    }
   }
 }
 
@@ -213,7 +260,7 @@ function fillBlankSquares() {
  
 function fillPuzzleWithWords(wordsArray) {
   for(var i = 0; i < wordsArray.length; i++) {
-    insertWordIntoGrid(wordsArray[i][0]);
+    insertWordIntoGrid(wordsArray[i]);
   }
 } 
 
@@ -269,10 +316,8 @@ $(document).on("click", ".square", function(e) {
 
       console.log("You win")
       if (soundOn) { winSound.play(); }
-      // $winMessageContainer.fadeIn();
+      $winMessageContainer.fadeIn();
     }
-
-
   }
 })
 
@@ -341,7 +386,6 @@ function squaresAreTouching(selectedIds, square2Id) {
       touching = false;
     }
 
-
   }
 
   console.log(selectionType)
@@ -380,18 +424,25 @@ function crossOutWordAndClue(word) {
 
 
 $(document).on("click", "#play-again-button", function() {
-  startGame();
+  $winMessageContainer.fadeOut();
+  gameHasStarted = false;
+  $optionsContainer.fadeIn();
 });
 
 function startGame() {
+  gameHasStarted = true;
   selectedIds = [];
   selectionType = "";
   foundWordCount = 0;
+  clearWordAndClueHtml();
+  clearPlayArea();
   buildSquares(); 
-  fillPuzzleWithWords(words)
+  fillPuzzleWithWords(words);
   fillBlankSquares();
-  $winMessageContainer.fadeOut();
+  $winMessageContainer.hide();
 }
+
+$closeOptionsPanelButton.hide();
 
 startGame();
 

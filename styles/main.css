@@ -2,6 +2,10 @@ body {
   font-family: Arial;
 }
 
+.borderless {
+  border: none !important;
+}
+
 .square {
   border: 1px solid black;
   box-sizing: border-box;
@@ -25,18 +29,44 @@ body {
   cursor: pointer;
 }
 
-.contains-word {
+.show-answer {
   color: red;
 }
 
+
 #play-area {
-  width: 400px;
   display: inline-block;
-  float: left;
 }
 
 #word-list {
+  border-right: 1px solid rgba(20, 20, 20, .5);
+  padding-right: 40px;
+}
+
+#word-list,
+#clue-area {
+  float: left;
   font-size: 24px;
+  padding-top: 15px;
+  border-top: 1px solid rgba(20, 20, 20, .5);
+}
+
+
+body {
+  text-align: center;
+}
+
+#list-and-clue-container,
+#clue-area-container {
+  vertical-align: top;
+  text-align: center;
+  margin: 0 auto;
+}
+
+#list-and-clue-container::after {
+  display: block;
+  content: "";
+  clear: both;
 }
 
 li {
@@ -70,7 +100,7 @@ li {
   right: 0;
   padding-top: 30px;
   z-index: 10;
-  position: absolute;
+  position: fixed;
   color: snow;
   text-align: center;
   /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#61efd2+1,59a8e5+100 */
@@ -82,7 +112,8 @@ li {
 }
 
 #play-again-button,
-#start-new-game-button {
+#start-new-game-button,
+#close-options-panel-button {
   border: 3px solid snow;
   border-radius: 3px;
   display: block;
@@ -93,6 +124,11 @@ li {
   font-weight: bold;
 }
 
+#close-options-panel-button {
+  position: absolute;
+  left: 10px;
+}
+
 #start-new-game-button:hover {
   background-color: rgba(97, 219, 210, 1)
 }
@@ -101,12 +137,10 @@ li {
   margin-top: 30px;
 }
 
-#start-new-game-button:hover {
-  cursor: pointer; ;
-}
-
+#start-new-game-button:hover,
+#close-options-panel-button:hover,
 #play-again-button:hover {
-  cursor: pointer;
+  cursor: pointer; ;
 }
 
 select {
@@ -158,14 +192,20 @@ select {
   cursor: pointer;
 }
 
-#soundOnLabel {
+#soundOnLabel,
+#borderless-label,
+#show-answers-label {
   margin-top: 20px;
   font-weight: bold;
   font-size: 24px;
 }
 
 #soundOnLabel:hover,
-#soundOnButton:hover {
+#soundOnButton:hover,
+#borderless-label:hover,
+#borderless-button:hover,
+#show-answers-label:hover,
+#show-answers-button:hover {
   cursor: pointer;
 }
 
@@ -240,5 +280,11 @@ select {
   }
   100% {
     -ms-transform:  translate(0px,-100px) ;
+  }
+}
+
+@media print {
+  .no-print {
+    display: none;
   }
 }
