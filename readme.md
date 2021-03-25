@@ -1,4 +1,4 @@
-# Javascript words earch generator / game
+# Javascript word search generator / game
 
 Use word/clue pairs in a list to generate word search for printouts or to just play online
 
